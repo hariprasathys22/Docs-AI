@@ -1,0 +1,10 @@
+fastapi[standard]
+uvicorn[standard]
+pydantic
+celery
+redis
+qdrant-client
+httpx
+python-dotenv
+slowapi        
+lmstudio
