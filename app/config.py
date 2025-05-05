@@ -17,3 +17,5 @@ LM_MODEL_NAME = os.getenv(
     "LM_MODEL_NAME",
     "deepseek-r1-distill-qwen-7b"
 )
+MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://hariprasathys:22Sep2002.@docsai.vdmih1r.mongodb.net/")
+JWT_SECRET = os.getenv("JWT_SECRET", "supersecret")
