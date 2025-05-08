@@ -42,4 +42,5 @@ async def login(user: UserLogin):
     token = create_token({"user_id": str(user_doc["_id"]), "email": user_doc["email"]})
     return {
         "token": token,
+        "token_type": "bearer"
     }

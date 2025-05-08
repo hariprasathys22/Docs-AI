@@ -1,5 +1,3 @@
-# backend/app/services/ingest.py
-
 import uuid
 from pathlib import Path
 from app.services.converter import extract_text
@@ -7,7 +5,9 @@ from app.services.chunker   import chunk_text
 from app.services.embedder  import embed_chunks
 from app.services.vector_db import upsert_chunks
 
-async def process(file_path: str):
+from qdrant_client.models import PointStruct  # ✅ Import Qdrant's type-safe point model
+
+async def process(file_path: str, user_id: str):
     """
     1) Convert file → raw text
     2) Split text → overlapping chunks
@@ -26,21 +26,25 @@ async def process(file_path: str):
     texts   = [c["text"] for c in chunks]
     vectors = embed_chunks(texts)  # List[List[float]]
 
-    # 4) Build payloads with UUIDs and upsert
+    # 4) Build payloads as PointStructs and upsert
     points = []
-    for idx, chunk in enumerate(chunks):
-        # generate a fresh UUID for this point
-        point_id = str(uuid.uuid4())
+    for idx, (chunk, vector) in enumerate(zip(chunks, vectors)):
+        point_id = str(uuid.uuid4())  # Unique UUID for each chunk
 
         payload = {
+            "user_id":   str(user_id),  # ✅ ensure serializable
             "text":      chunk["text"],
             "source":    fn,
             "chunk_idx": idx,
         }
 
-        points.append({
-            "id":      point_id,
-            "payload": payload,
-        })
+        point = PointStruct(
+            id=point_id,
+            vector=vector,
+            payload=payload
+        )
 
-    await upsert_chunks(points, vectors)
+        points.append(point)
+
+    await upsert_chunks(points)
+ 

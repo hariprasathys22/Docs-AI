@@ -9,7 +9,7 @@ VECTOR_DIM = 768
 COLLECTION_NAME = "documents"
 EMBED_MODEL_NAME = os.getenv(
     "EMBED_MODEL_NAME",
-    "text-embedding-nomic-embed-text-v11"
+    "text-embedding-nomic-embed-text-v1.5"
 )
 LMSTUDIO_HOST = os.getenv("LMSTUDIO_HOST", "localhost")
 LMSTUDIO_PORT = os.getenv("LMSTUDIO_PORT", "1234")
